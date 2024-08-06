@@ -1,0 +1,60 @@
+_schema-version: "3.2"
+ID: vuejsapp
+version: 0.0.1
+modules:
+- name: vuejsapp-approuter
+  type: approuter.nodejs
+  path: vuejsapp-approuter
+  requires:
+  - name: vuejsapp_html_repo_runtime
+  - name: uaa_vuejsapp
+  - name: vuejsapp_dest
+  parameters:
+    disk-quota: 256M
+    memory: 256M
+- name: vuejsapp_ui_deployer
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: vuejsapp_html_repo_host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - vuejsapp-content.zip
+      name: vuejsapp
+      target-path: resources/
+- name: vuejsapp
+  type: html5
+  path: vuejsapp
+  build-parameters:
+    builder: custom
+    commands:
+    - npm install
+    - npm run build
+    supported-platforms: []
+resources:
+- name: vuejsapp_html_repo_runtime
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-runtime
+- name: uaa_vuejsapp
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: vuejsapp-xsuaa-service
+    service-plan: application
+- name: vuejsapp_html_repo_host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-host
+- name: vuejsapp_dest
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: destination
+    service-plan: lite

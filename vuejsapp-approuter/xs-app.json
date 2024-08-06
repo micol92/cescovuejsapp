@@ -1,0 +1,13 @@
+{
+  "welcomeFile": "microapp02",
+  "authenticationMethod": "none",
+  "routes": [
+  {
+    "authenticationType": "none",
+    "csrfProtection": false,
+    "source": "^/core_api_token_exchg/(.*)$",
+    "destination": "core_api_token_exchg",
+    "target": "$1"
+  }
+ ]
+}
